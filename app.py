@@ -19,7 +19,6 @@ def upload_images():
     for uploaded_file in uploaded_files:
         if uploaded_file and allowed_file(uploaded_file.filename):
             filename = secure_filename(uploaded_file.filename)
-            image_names.append(filename)
             # Store the uploaded file in a temporary location
             with tempfile.NamedTemporaryFile(delete=False) as temp_file:
                 uploaded_file.save(temp_file)
@@ -51,21 +50,24 @@ def convert_images_to_pdf():
                 uploaded_file.save(temp_file)
                 image_path = temp_file.name
 
-            image = Image.open(image_path)
-            available_width = page_width - (2 * margin)
-            available_height = page_height - (2 * margin)
+            try:
+                image = Image.open(image_path)
+                available_width = page_width - (2 * margin)
+                available_height = page_height - (2 * margin)
 
-            scale_factor = min(available_width / image.width, available_height / image.height)
-            new_width = image.width * scale_factor
-            new_height = image.height * scale_factor
+                scale_factor = min(available_width / image.width, available_height / image.height)
+                new_width = image.width * scale_factor
+                new_height = image.height * scale_factor
 
-            x_position = margin + (available_width - new_width) / 2
-            y_position = margin + (available_height - new_height) / 2
+                x_position = margin + (available_width - new_width) / 2
+                y_position = margin + (available_height - new_height) / 2
 
-            pdf.setFillColorRGB(1, 1, 1)
-            pdf.rect(0, 0, page_width, page_height, fill=True, stroke=False)
-            pdf.drawInlineImage(image_path, x_position, y_position, width=new_width, height=new_height)
-            pdf.showPage()
+                pdf.setFillColorRGB(1, 1, 1)
+                pdf.rect(0, 0, page_width, page_height, fill=True, stroke=False)
+                pdf.drawInlineImage(image_path, x_position, y_position, width=new_width, height=new_height)
+                pdf.showPage()
+            except Exception as e:
+                return f"Error processing image {filename}: {str(e)}", 500
 
     pdf.save()
 
@@ -76,4 +78,4 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in allowed_extensions
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image to PDF Converter</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to right, #6a11cb, #2575fc);
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .container h1 {
+            font-size: 28px;
+            margin-bottom: 20px;
+            color: #ffffff;
+        }
+
+        .file-input {
+            background: #ffffff;
+            padding: 10px 20px;
+            border-radius: 50px;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            margin-bottom: 15px;
+            display: inline-block;
+            color: #6a11cb;
+        }
+
+        .file-input:hover {
+            background: #e4e4e4;
+        }
+
+        input[type="text"] {
+            width: 90%;
+            padding: 10px;
+            margin-top: 10px;
+            margin-bottom: 20px;
+            border-radius: 20px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+
+        button {
+            background: #2575fc;
+            color: #ffffff;
+            border: none;
+            border-radius: 50px;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: 0.3s ease-in-out;
+        }
+
+        button:hover {
+            background: #6a11cb;
+        }
+
+        .info {
+            font-size: 14px;
+            margin-top: 15px;
+            color: #e0e0e0;
+        }
+
+        .info a {
+            color: #ffffff;
+            text-decoration: underline;
+        }
+
+        .upload-area {
+            border: 2px dashed #ddd;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            color: #ffffff;
+        }
+
+        .upload-area:hover {
+            border-color: #ffffff;
+        }
+
+        .file-list {
+            list-style: none;
+            padding: 0;
+            margin: 10px 0;
+            color: #ffffff;
+            font-size: 14px;
+            text-align: left;
+        }
+
+        .file-list li {
+            margin-bottom: 5px;
+        }
+    </style>
+    <script>
+        function previewSelectedFiles() {
+            const input = document.getElementById('images');
+            const fileList = document.getElementById('fileList');
+            fileList.innerHTML = ""; // Clear previous file list
+
+            Array.from(input.files).forEach((file) => {
+                const listItem = document.createElement('li');
+                listItem.textContent = file.name;
+                fileList.appendChild(listItem);
+            });
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1><i class="fas fa-file-pdf"></i> Image to PDF Converter</h1>
+        <form action="/convert" method="POST" enctype="multipart/form-data">
+            <div class="upload-area">
+                <label for="images">Drag & Drop Your Images Here or Click to Upload</label>
+                <input type="file" id="images" name="images" multiple accept="image/*" class="file-input" onchange="previewSelectedFiles()" required>
+            </div>
+            <ul id="fileList" class="file-list"></ul> <!-- Display selected file names -->
+            <input type="text" id="pdf_name" name="pdf_name" placeholder="Enter PDF Name (e.g., MyDocument)" required>
+            <button type="submit"><i class="fas fa-file-download"></i> Convert to PDF</button>
+        </form>
+        <div class="info">
+            Supported formats: <b>JPG, PNG, JPEG</b>. <br>
+            <a href="https://www.linkedin.com/in/hitesh-kumar-aiml/" target="_blank">Made by Hitesh</a>
+        </div>
+    </div>
+</body>
+</html>

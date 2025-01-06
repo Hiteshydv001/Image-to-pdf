@@ -1,16 +1,11 @@
 from flask import Flask, render_template, request, send_file, jsonify
 import os
+import tempfile
 from werkzeug.utils import secure_filename
 from reportlab.pdfgen import canvas
 from PIL import Image
 
 app = Flask(__name__)
-UPLOAD_FOLDER = 'uploads'
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-
-# Ensure upload folder exists
-if not os.path.exists(UPLOAD_FOLDER):
-    os.makedirs(UPLOAD_FOLDER)
 
 @app.route('/')
 def home():
@@ -25,8 +20,10 @@ def upload_images():
         if uploaded_file and allowed_file(uploaded_file.filename):
             filename = secure_filename(uploaded_file.filename)
             image_names.append(filename)
-            image_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-            uploaded_file.save(image_path)
+            # Store the uploaded file in a temporary location
+            with tempfile.NamedTemporaryFile(delete=False) as temp_file:
+                uploaded_file.save(temp_file)
+                image_names.append(temp_file.name)
 
     return jsonify(image_names=image_names)
 
@@ -34,7 +31,7 @@ def upload_images():
 def convert_images_to_pdf():
     uploaded_files = request.files.getlist("images")
     output_pdf_name = request.form.get("pdf_name", "output") + ".pdf"
-    output_pdf_path = os.path.join(app.config['UPLOAD_FOLDER'], output_pdf_name)
+    output_pdf_path = os.path.join(tempfile.gettempdir(), output_pdf_name)
 
     if not uploaded_files:
         return "No files uploaded. Please select images to upload.", 400
@@ -48,8 +45,11 @@ def convert_images_to_pdf():
     for uploaded_file in uploaded_files:
         if uploaded_file and allowed_file(uploaded_file.filename):
             filename = secure_filename(uploaded_file.filename)
-            image_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-            uploaded_file.save(image_path)
+
+            # Use tempfile to store the image temporarily
+            with tempfile.NamedTemporaryFile(delete=False) as temp_file:
+                uploaded_file.save(temp_file)
+                image_path = temp_file.name
 
             image = Image.open(image_path)
             available_width = page_width - (2 * margin)

@@ -35,15 +35,20 @@ pip install -r requirements.txt
 ```bash
 python app.py
 ```
+---
+
 The app will start on `http://127.0.0.1:5000/`.
 How to Use
 1. Go to the home page of the app.
 2. Click on the "Drag & Drop Your Images Here or Click to Upload" area to upload your image files (JPG, PNG, or JPEG).
 3. Enter a name for the output PDF.
 4. Click on the **Convert to PDF** button to generate and download the PDF file containing the uploaded images.
+
+---
+
 Contributing
 Feel free to fork this repository and submit issues or pull requests. If you have any 
 suggestions for improvements or enhancements, please let me know!
-License
-This project is licensed under the MIT License - see the LICENSE file for details.
+
+---
 Made with ❤️ by [Hitesh](https://github.com/Hiteshydv001).
